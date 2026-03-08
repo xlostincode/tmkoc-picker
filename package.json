@@ -7,6 +7,8 @@
   "scripts": {
     "init-db": "tsx src/db/init.ts",
     "drop-db": "tsx src/db/drop.ts",
+    "seed-db": "tsx src/db/seed.ts",
+    "youtube-fetch-playlist": "tsx src/platform/youtube/fetch-playlist.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
