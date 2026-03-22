@@ -90,6 +90,18 @@ function getEpisodes() {
     }[];
 }
 
+function getSources() {
+    return _db.prepare(`SELECT * FROM sources`).all() as {
+        id: number;
+        episode_id: number;
+        platform: string;
+        url: string;
+        external_id: string;
+        created_at: string;
+        updated_at: string;
+    }[];
+}
+
 export const db = {
     db: _db,
     upsertShow,
@@ -98,5 +110,6 @@ export const db = {
     insertSourceStats,
     getSourceByPlatformAndExternalId,
     getShows,
-    getEpisodes
+    getEpisodes,
+    getSources
 }
