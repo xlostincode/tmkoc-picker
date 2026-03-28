@@ -1,7 +1,8 @@
+import { RouterProvider } from "@tanstack/react-router"
+import { router } from "./router"
+
 function App() {
-  return <main className="flex justify-center items-center h-screen">
-    Hello world
-  </main>
+  return <RouterProvider router={router} />
 }
 
 export default App
