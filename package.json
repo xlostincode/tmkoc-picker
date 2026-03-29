@@ -9,6 +9,7 @@
     "drop-db": "tsx src/db/drop.ts",
     "seed-db": "tsx src/db/seed.ts",
     "server": "tsx src/server/index.ts",
+    "server-dev": "tsx watch src/server/index.ts",
     "youtube-fetch-playlist": "tsx src/platform/youtube/fetch-playlist.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

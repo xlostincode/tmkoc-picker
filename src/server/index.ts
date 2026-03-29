@@ -2,12 +2,15 @@ import Fastify from 'fastify'
 import fastifyStatic from '@fastify/static'
 import path from 'path'
 import { db } from '../db/db.js'
+import api from './routes/api/index.js'
 
 const app = Fastify({
     logger: true
 })
 
 const root = path.resolve()
+
+app.register(api, { prefix: '/api' })
 
 app.register(fastifyStatic, {
     root: path.join(root, 'dist/client'),
@@ -19,14 +22,6 @@ app.setNotFoundHandler((req, reply) => {
     }
 
     reply.sendFile('index.html')
-})
-
-app.get('/random/tmkoc', async function handler(request, reply) {
-    const sources = db.getSources()
-
-    const randomSource = sources[Math.floor(Math.random() * sources.length)]
-
-    reply.redirect(randomSource?.url!)
 })
 
 try {

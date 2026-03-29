@@ -102,6 +102,152 @@ function getSources() {
     }[];
 }
 
+function getEpisodeByNumber(episodeNumber: number) {
+    return _db.prepare(`
+            SELECT * FROM episodes
+            JOIN sources ON episodes.id = sources.episode_id
+            WHERE episode_number = ?`
+    ).get(episodeNumber) as { url: string }
+}
+
+function getPopularEpisode(toEpisodeNumber: number) {
+    return _db.prepare(`
+        WITH 
+        LatestStats AS (
+            SELECT source_id, likes
+            FROM source_stats
+            WHERE id IN (SELECT MAX(id) FROM source_stats GROUP BY source_id)
+        ),
+        TopEpisodes AS (
+            SELECT e.*, s.*, ls.likes
+            FROM episodes e
+            JOIN sources s ON e.id = s.episode_id
+            JOIN LatestStats ls ON s.id = ls.source_id
+            ORDER BY ls.likes DESC
+            LIMIT ?
+        )
+
+        SELECT * FROM TopEpisodes
+        ORDER BY RANDOM()
+        LIMIT 1
+    `).get(toEpisodeNumber) as { url: string }
+}
+
+function getUnpopularEpisode(toEpisodeNumber: number) {
+    return _db.prepare(`
+        WITH 
+        LatestStats AS (
+            SELECT source_id, likes
+            FROM source_stats
+            WHERE id IN (SELECT MAX(id) FROM source_stats GROUP BY source_id)
+        ),
+        TopEpisodes AS (
+            SELECT e.*, s.*, ls.likes
+            FROM episodes e
+            JOIN sources s ON e.id = s.episode_id
+            JOIN LatestStats ls ON s.id = ls.source_id
+            ORDER BY ls.likes ASC
+            LIMIT ?
+        )
+
+        SELECT * FROM TopEpisodes
+        ORDER BY RANDOM()
+        LIMIT 1
+    `).get(toEpisodeNumber) as { url: string }
+}
+
+function getMostViewedEpisode(toEpisodeNumber: number) {
+    return _db.prepare(`
+        WITH 
+        LatestStats AS (
+            SELECT source_id, views
+            FROM source_stats
+            WHERE id IN (SELECT MAX(id) FROM source_stats GROUP BY source_id)
+        ),
+        TopEpisodes AS (
+            SELECT e.*, s.*, ls.views
+            FROM episodes e
+            JOIN sources s ON e.id = s.episode_id
+            JOIN LatestStats ls ON s.id = ls.source_id
+            ORDER BY ls.views DESC
+            LIMIT ?
+        )
+
+        SELECT * FROM TopEpisodes
+        ORDER BY RANDOM()
+        LIMIT 1
+    `).get(toEpisodeNumber) as { url: string }
+}
+
+function getLeastViewedEpisode(toEpisodeNumber: number) {
+    return _db.prepare(`
+        WITH 
+        LatestStats AS (
+            SELECT source_id, views
+            FROM source_stats
+            WHERE id IN (SELECT MAX(id) FROM source_stats GROUP BY source_id)
+        ),
+        TopEpisodes AS (
+            SELECT e.*, s.*, ls.views
+            FROM episodes e
+            JOIN sources s ON e.id = s.episode_id
+            JOIN LatestStats ls ON s.id = ls.source_id
+            ORDER BY ls.views ASC
+            LIMIT ?
+        )
+
+        SELECT * FROM TopEpisodes
+        ORDER BY RANDOM()
+        LIMIT 1
+    `).get(toEpisodeNumber) as { url: string }
+}
+
+function getMostCommentedEpisode(toEpisodeNumber: number) {
+    return _db.prepare(`
+        WITH 
+        LatestStats AS (
+            SELECT source_id, comment_count
+            FROM source_stats
+            WHERE id IN (SELECT MAX(id) FROM source_stats GROUP BY source_id)
+        ),
+        TopEpisodes AS (
+            SELECT e.*, s.*, ls.comment_count
+            FROM episodes e
+            JOIN sources s ON e.id = s.episode_id
+            JOIN LatestStats ls ON s.id = ls.source_id
+            ORDER BY ls.comment_count DESC
+            LIMIT ?
+        )
+
+        SELECT * FROM TopEpisodes
+        ORDER BY RANDOM()
+        LIMIT 1
+    `).get(toEpisodeNumber) as { url: string }
+}
+
+function getLeastCommentedEpisode(toEpisodeNumber: number) {
+    return _db.prepare(`
+        WITH 
+        LatestStats AS (
+            SELECT source_id, comment_count
+            FROM source_stats
+            WHERE id IN (SELECT MAX(id) FROM source_stats GROUP BY source_id)
+        ),
+        TopEpisodes AS (
+            SELECT e.*, s.*, ls.comment_count
+            FROM episodes e
+            JOIN sources s ON e.id = s.episode_id
+            JOIN LatestStats ls ON s.id = ls.source_id
+            ORDER BY ls.comment_count ASC
+            LIMIT ?
+        )
+
+        SELECT * FROM TopEpisodes
+        ORDER BY RANDOM()
+        LIMIT 1
+    `).get(toEpisodeNumber) as { url: string }
+}
+
 export const db = {
     db: _db,
     upsertShow,
@@ -111,5 +257,12 @@ export const db = {
     getSourceByPlatformAndExternalId,
     getShows,
     getEpisodes,
-    getSources
+    getSources,
+    getEpisodeByNumber,
+    getPopularEpisode,
+    getUnpopularEpisode,
+    getMostViewedEpisode,
+    getLeastViewedEpisode,
+    getMostCommentedEpisode,
+    getLeastCommentedEpisode
 }
