@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { MODES } from "../../api/const"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function Home() {
     const [activeTab, setActiveTab] = useState(MODES.RANDOM)
@@ -23,29 +25,30 @@ export default function Home() {
                     Discover Episodes
                 </p>
 
-                {/* Tabs Wrapper */}
-                <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
-                    {Object.values(MODES).map((mode) => (
-                        <button
-                            key={mode}
-                            onClick={() => setActiveTab(mode)}
-                            className={`px-4 py-2 rounded-xl font-bold text-sm tracking-wide transition-all duration-200 border-2 ${activeTab === mode
-                                ? 'bg-indigo-500 border-indigo-500 text-white shadow-md scale-105'
-                                : 'bg-white border-white text-gray-500 hover:text-indigo-500 hover:border-indigo-200 hover:bg-indigo-50 shadow-sm'
-                                }`}
-                        >
-                            {mode.replace('_', ' ').toUpperCase()}
-                        </button>
-                    ))}
-                </div>
+                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full flex flex-col items-center">
+                    <TabsList className="mb-8 flex flex-wrap !h-auto justify-center gap-3 bg-transparent">
+                        {Object.values(MODES).map((mode) => (
+                            <TabsTrigger
+                                key={mode}
+                                value={mode}
+                                className="!h-auto px-6 py-3.5 rounded-md font-bold text-sm tracking-wide data-[state=active]:bg-indigo-600 data-[state=active]:text-white shadow-sm hover:bg-white/50 transition-all text-slate-600"
+                            >
+                                {mode.replace('_', ' ').toUpperCase()}
+                            </TabsTrigger>
+                        ))}
+                    </TabsList>
 
-                {/* Content Area */}
-                <div className="bg-indigo-50/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-indigo-100 min-h-[200px] flex items-center justify-center">
-                    <p className="text-2xl font-bold text-indigo-400 uppercase tracking-widest">
-                        {activeTab.replace('_', ' ')}
-                    </p>
-                </div>
+                    {Object.values(MODES).map((mode) => (
+                        <TabsContent key={mode} value={mode} className="w-full">
+                            <div className="bg-indigo-50/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-indigo-100 min-h-[200px] flex items-center justify-center">
+                                <p className="text-2xl font-bold text-indigo-400 uppercase tracking-widest">
+                                    {mode.replace('_', ' ')}
+                                </p>
+                            </div>
+                        </TabsContent>
+                    ))}
+                </Tabs>
             </div>
-        </div >
+        </div>
     )
 }
