@@ -1,10 +1,49 @@
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { MODES } from "../../api/const"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Slider } from "@/components/ui/slider"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { useEpisode } from "../../mutations/useEpisode"
+
+const MIN_EPISODE = 1
+const MAX_EPISODE = 4633
 
 export default function Home() {
-    const [activeTab, setActiveTab] = useState(MODES.RANDOM)
+    const [activeTab, setActiveTab] = useState<typeof MODES[keyof typeof MODES]>(MODES.RANDOM)
+    const [episodeRange, setEpisodeRange] = useState([MIN_EPISODE, MAX_EPISODE])
+    const [cutoff, setCutoff] = useState([50])
+
+    const { mutateAsync: fetchEpisode, isPending: isLoading } = useEpisode()
+
+    const handleRangeChange = useCallback((value: number[]) => {
+        setEpisodeRange(value)
+    }, [])
+
+    const handleCutoffChange = useCallback((value: number[]) => {
+        setCutoff(value)
+    }, [])
+
+    const getModeText = () => {
+        switch (activeTab) {
+            case MODES.RANDOM:
+                return `Pick a random episode between Ep. ${episodeRange[0]} and Ep. ${episodeRange[1]}`
+            case MODES.MOST_VIEWED:
+                return `Pick a random episode from the top ${cutoff[0]} most viewed episodes`
+            case MODES.LEAST_VIEWED:
+                return `Pick a random episode from the top ${cutoff[0]} least viewed episodes`
+            case MODES.MOST_LIKED:
+                return `Pick a random episode from the top ${cutoff[0]} most liked episodes`
+            case MODES.LEAST_LIKED:
+                return `Pick a random episode from the top ${cutoff[0]} least liked episodes`
+            case MODES.MOST_COMMENTED:
+                return `Pick a random episode from the top ${cutoff[0]} most commented episodes`
+            case MODES.LEAST_COMMENTED:
+                return `Pick a random episode from the top ${cutoff[0]} least commented episodes`
+            default:
+                return ""
+        }
+    }
 
     return (
         <div className="relative min-h-screen bg-sky-50 overflow-hidden flex flex-col items-center justify-center p-4">
@@ -18,14 +57,37 @@ export default function Home() {
 
             {/* Main Content Container */}
             <div className="relative z-10 bg-white/70 backdrop-blur-md p-10 rounded-3xl shadow-2xl border-4 border-white text-center max-w-3xl w-full">
-                <h1 className="text-5xl md:text-6xl font-extrabold text-indigo-600 drop-shadow-sm mb-4 tracking-wide">
-                    TMKOC
-                </h1>
-                <p className="text-gray-600 font-medium text-lg mb-8">
-                    Discover Episodes
-                </p>
 
-                <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full flex flex-col items-center">
+                {/* Help Dialog */}
+                <Dialog>
+                    <DialogTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            className="absolute top-4 right-4 rounded-md px-4 py-2 text-indigo-500 hover:bg-indigo-100 hover:text-indigo-700 bg-white/50 shadow-sm border border-indigo-100"
+                        >
+                            <span className="font-bold text-md">Help</span>
+                        </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader>
+                            <DialogTitle className="text-xl text-indigo-600">How to use TMKOC Picker?</DialogTitle>
+                            <DialogDescription className="text-gray-600 mt-2 space-y-3">
+                                <p>Do you ever sit down to eat but can't decide which TMKOC episode to watch? Well, you've come to the right place!</p>
+                                <p><strong>1. Random:</strong> Pick a truly random episode within the range you select using the slider.</p>
+                                <p><strong>2. Metrics (Most Liked, etc.):</strong> Discover top episodes based on Youtube statistics! Use the <em>Cut Off</em> slider to narrow down the selection pool (e.g. searching only within the Top 50).</p>
+                                <p className="pt-2 italic text-sm">Hit 'Watch Episode' and enjoy!</p>
+                            </DialogDescription>
+                        </DialogHeader>
+                    </DialogContent>
+                </Dialog>
+
+                <h1 className="text-2xl font-bold drop-shadow-sm mb-4 tracking-wide text-gray-800">
+                    Random Episode Picker <br /><span className="text-indigo-600">Taarak Mehta Ka Ooltah Chashmah</span>
+                </h1>
+
+                <Tabs value={activeTab} onValueChange={(value) => {
+                    setActiveTab(value as typeof MODES[keyof typeof MODES])
+                }} className="w-full flex flex-col items-center">
                     <TabsList className="mb-8 flex flex-wrap !h-auto justify-center gap-3 bg-transparent">
                         {Object.values(MODES).map((mode) => (
                             <TabsTrigger
@@ -40,15 +102,87 @@ export default function Home() {
 
                     {Object.values(MODES).map((mode) => (
                         <TabsContent key={mode} value={mode} className="w-full">
-                            <div className="bg-indigo-50/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-indigo-100 min-h-[200px] flex items-center justify-center">
-                                <p className="text-2xl font-bold text-indigo-400 uppercase tracking-widest">
-                                    {mode.replace('_', ' ')}
-                                </p>
+                            <div className="bg-indigo-50/50 backdrop-blur-sm rounded-2xl p-8 border-2 border-indigo-100 min-h-[200px] flex flex-col items-center justify-center gap-8">
+                                {/* Conditionally Render Episode Range Slider */}
+                                {mode === MODES.RANDOM && (
+                                    <div className="w-full max-w-md mx-auto space-y-4">
+                                        <div className="flex justify-between items-center px-1">
+                                            <div className="flex flex-col items-start bg-white p-2 rounded-lg shadow-sm border border-indigo-100 min-w-[100px]">
+                                                <span className="text-xs font-semibold text-indigo-400 uppercase">From</span>
+                                                <span className="font-bold text-indigo-700">Ep. {episodeRange[0]}</span>
+                                            </div>
+                                            <div className="flex flex-col items-end bg-white p-2 rounded-lg shadow-sm border border-indigo-100 min-w-[100px]">
+                                                <span className="text-xs font-semibold text-indigo-400 uppercase">Till</span>
+                                                <span className="font-bold text-indigo-700">Ep. {episodeRange[1]}</span>
+                                            </div>
+                                        </div>
+
+                                        <Slider
+                                            value={episodeRange}
+                                            min={MIN_EPISODE}
+                                            max={MAX_EPISODE}
+                                            step={1}
+                                            onValueChange={handleRangeChange}
+                                            className="py-4 cursor-pointer"
+                                        />
+
+                                        <p className="text-sm text-gray-600 font-medium">
+                                            {getModeText()}
+                                        </p>
+                                    </div>
+                                )}
+
+                                {/* Cut Off Slider */}
+                                {mode !== MODES.RANDOM && <div className="w-full max-w-md mx-auto space-y-4">
+                                    <div className="flex justify-start items-center px-1">
+                                        <div className="flex flex-col items-start bg-white p-2 rounded-lg shadow-sm border border-indigo-100 min-w-[100px]">
+                                            <span className="text-xs font-semibold text-indigo-400 uppercase">Cut Off</span>
+                                            <span className="font-bold text-indigo-700">{cutoff[0]}</span>
+                                        </div>
+                                    </div>
+
+                                    <Slider
+                                        value={cutoff}
+                                        min={MIN_EPISODE}
+                                        max={MAX_EPISODE}
+                                        step={1}
+                                        onValueChange={handleCutoffChange}
+                                        className="py-4 cursor-pointer"
+                                    />
+
+                                    <p className="text-sm text-gray-600 font-medium">
+                                        {getModeText()}
+                                    </p>
+                                </div>}
                             </div>
                         </TabsContent>
                     ))}
                 </Tabs>
+
+                <div className="mt-10 flex justify-center">
+                    <Button
+                        size="lg"
+                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-6 px-10 rounded-md text-xl shadow-lg transition-transform hover:scale-105 active:scale-95"
+                        disabled={isLoading}
+                        onClick={async () => {
+                            try {
+                                const data = await fetchEpisode({
+                                    mode: activeTab,
+                                    fromEp: episodeRange[0],
+                                    tillEp: episodeRange[1],
+                                    cutoff: cutoff[0],
+                                    redirect: false
+                                })
+                                window.open(data.episode.url, '_blank')
+                            } catch (e) {
+                                console.error(e)
+                            }
+                        }}
+                    >
+                        {isLoading ? "Finding episode..." : "Watch Episode"}
+                    </Button>
+                </div>
             </div>
-        </div>
+        </div >
     )
 }

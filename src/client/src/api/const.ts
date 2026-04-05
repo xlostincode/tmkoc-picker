@@ -1,6 +1,6 @@
 const ENDPOINTS = {
     SHOW_TMKOC: 'shows/taarak-mehta-ka-ooltah-chashmah',
-}
+} as const
 
 const MODES = {
     RANDOM: 'random',
@@ -10,6 +10,6 @@ const MODES = {
     LEAST_VIEWED: 'least_viewed',
     MOST_COMMENTED: 'most_commented',
     LEAST_COMMENTED: 'least_commented',
-}
+} as const
 
 export { ENDPOINTS, MODES }
