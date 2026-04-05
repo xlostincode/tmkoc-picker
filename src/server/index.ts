@@ -3,9 +3,14 @@ import fastifyStatic from '@fastify/static'
 import path from 'path'
 import { db } from '../db/db.js'
 import api from './routes/api/index.js'
+import cors from '@fastify/cors'
 
 const app = Fastify({
     logger: true
+})
+
+app.register(cors, {
+    origin: '*',
 })
 
 const root = path.resolve()
