@@ -1,6 +1,6 @@
 import "dotenv/config";
 
-const requiredEnv = ["DATABASE", "YOUTUBE_API_KEY"];
+const requiredEnv = ["DATABASE"];
 
 for (const env of requiredEnv) {
     if (!process.env[env]) {
