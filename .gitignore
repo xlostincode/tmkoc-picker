@@ -1,6 +1,5 @@
 node_modules
 dist
-*.db
 *.db.*
 .env
 TODO.md
