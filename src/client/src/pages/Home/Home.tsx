@@ -49,7 +49,7 @@ export default function Home() {
     }
 
     return (
-        <div className="relative min-h-screen bg-sky-50 dark:bg-slate-950 overflow-hidden flex flex-col items-center justify-center p-4">
+        <div className="relative min-h-screen bg-sky-50 dark:bg-slate-950 overflow-hidden flex flex-col items-center md:justify-center md:p-4">
             {/* Playful Background Shapes */}
             <div className="absolute -top-10 -left-10 w-64 h-64 bg-pink-300 rounded-full opacity-60"></div>
             <div className="absolute top-20 right-10 w-48 h-48 bg-yellow-300 rounded-[2rem] rotate-12 opacity-70"></div>
@@ -86,7 +86,7 @@ export default function Home() {
                     </DialogContent>
                 </Dialog>
 
-                <h1 className="text-2xl font-bold drop-shadow-sm mb-4 tracking-wide text-gray-800 dark:text-gray-100">
+                <h1 className="text-2xl font-bold drop-shadow-sm mb-4 mt-4 md:mt-0 tracking-wide text-gray-800 dark:text-gray-100">
                     Random Episode Picker <br /><span className="text-indigo-600 dark:text-indigo-400">Taarak Mehta Ka Ooltah Chashmah</span>
                 </h1>
 
@@ -214,11 +214,11 @@ export default function Home() {
                 </div>
             </div>
 
-            <div className="flex gap-2 items-center justify-center mt-2">
-                <p className="text-xs text-zinc-500 text-right">
+            <div className="flex gap-2 items-center justify-center mt-2 z-20">
+                <p className="text-xs text-zinc-500 dark:text-zinc-200">
                     Made with ❤️ by Vihar •
                 </p>
-                <p className="text-xs text-zinc-500 text-right underline">
+                <p className="text-xs text-zinc-500 dark:text-zinc-200 underline">
                     <a
                         href="https://github.com/xlostincode/tmkoc-picker"
                         target="_blank"
