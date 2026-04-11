@@ -72,12 +72,13 @@ export default function Home() {
                     </DialogTrigger>
                     <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader>
-                            <DialogTitle className="text-xl text-indigo-600">How to use TMKOC Picker?</DialogTitle>
-                            <DialogDescription className="text-gray-600 mt-2 space-y-3">
+                            <DialogTitle className="text-xl text-indigo-500">How to use TMKOC Picker?</DialogTitle>
+                            <DialogDescription className="text-gray-600 dark:text-gray-400 mt-2 space-y-3">
                                 <p>Do you ever sit down to eat but can't decide which TMKOC episode to watch? Well, you've come to the right place!</p>
                                 <p><strong>1. Random:</strong> Pick a truly random episode within the range you select using the slider.</p>
-                                <p><strong>2. Metrics (Most Liked, etc.):</strong> Discover top episodes based on Youtube statistics! Use the <em>Cut Off</em> slider to narrow down the selection pool (e.g. searching only within the Top 50).</p>
-                                <p className="pt-2 italic text-sm">Hit 'Watch Episode' and enjoy!</p>
+                                <p><strong>2. Metrics (Most Liked, etc.):</strong> Discover top episodes based on Youtube statistics! Use the <em>Cut Off</em> slider to narrow down the selection pool (e.g. searching only within the Top 50 most viewed).</p>
+                                <p className="pt-2 italic text-sm"><strong>Hit 'Watch Episode' and enjoy!</strong></p>
+                                <p className="pt-2 italic text-sm">Currently, this website tracks episode 1 to 4633 of TMKOC and more will be added soon.</p>
                             </DialogDescription>
                         </DialogHeader>
                     </DialogContent>
