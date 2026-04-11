@@ -5,6 +5,8 @@ import { ModeToggle } from "@/components/mode-toggle"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Slider } from "@/components/ui/slider"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { ChevronDown } from "lucide-react"
 import { useEpisode } from "../../mutations/useEpisode"
 
 const MIN_EPISODE = 1
@@ -91,7 +93,32 @@ export default function Home() {
                 <Tabs value={activeTab} onValueChange={(value) => {
                     setActiveTab(value as typeof MODES[keyof typeof MODES])
                 }} className="w-full flex flex-col items-center">
-                    <TabsList className="mb-8 flex flex-wrap !h-auto justify-center gap-3 bg-transparent">
+
+                    {/* Mobile Dropdown */}
+                    <div className="md:hidden w-[280px] mb-8">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" className="w-full h-12 font-bold text-slate-700 dark:text-slate-200 border-indigo-200 dark:border-slate-700 bg-white/50 dark:bg-slate-800/50 flex justify-between px-4">
+                                    {activeTab.replace('_', ' ').toUpperCase()}
+                                    <ChevronDown className="h-5 w-5 opacity-50" />
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-[280px]">
+                                {Object.values(MODES).map((mode) => (
+                                    <DropdownMenuItem
+                                        key={mode}
+                                        onClick={() => setActiveTab(mode as typeof MODES[keyof typeof MODES])}
+                                        className={`py-3 font-semibold cursor-pointer ${activeTab === mode ? 'bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400' : ''}`}
+                                    >
+                                        {mode.replace('_', ' ').toUpperCase()}
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+
+                    {/* Desktop Tabs */}
+                    <TabsList className="hidden md:flex mb-8 flex-wrap !h-auto justify-center gap-3 bg-transparent">
                         {Object.values(MODES).map((mode) => (
                             <TabsTrigger
                                 key={mode}
@@ -185,6 +212,20 @@ export default function Home() {
                         {isLoading ? "Finding episode..." : "Watch Episode"}
                     </Button>
                 </div>
+            </div>
+
+            <div className="flex gap-2 items-center justify-center mt-2">
+                <p className="text-xs text-zinc-500 text-right">
+                    Made with ❤️ by Vihar •
+                </p>
+                <p className="text-xs text-zinc-500 text-right underline">
+                    <a
+                        href="https://github.com/xlostincode/tmkoc-picker"
+                        target="_blank"
+                    >
+                        Source code
+                    </a>
+                </p>
             </div>
         </div >
     )
