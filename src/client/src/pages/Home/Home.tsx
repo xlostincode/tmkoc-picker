@@ -139,11 +139,45 @@ export default function Home() {
                                         <div className="flex justify-between items-center px-1">
                                             <div className="flex flex-col items-start bg-white dark:bg-slate-900 p-2 rounded-lg shadow-sm border border-indigo-100 dark:border-slate-700 min-w-[100px]">
                                                 <span className="text-xs font-semibold text-indigo-400 dark:text-indigo-300 uppercase">From</span>
-                                                <span className="font-bold text-indigo-700 dark:text-indigo-400">Ep. {episodeRange[0]}</span>
+                                                <div className="flex items-center gap-1 w-full max-w-[80px]">
+                                                    <span className="font-bold text-indigo-700 dark:text-indigo-400">Ep.</span>
+                                                    <input
+                                                        type="number"
+                                                        value={episodeRange[0] || ""}
+                                                        onChange={(e) => {
+                                                            const val = e.target.value;
+                                                            setEpisodeRange([val === '' ? 0 : parseInt(val), episodeRange[1]]);
+                                                        }}
+                                                        onBlur={() => {
+                                                            let val = episodeRange[0];
+                                                            if (val < MIN_EPISODE) val = MIN_EPISODE;
+                                                            if (val > episodeRange[1]) val = episodeRange[1];
+                                                            setEpisodeRange([val, episodeRange[1]]);
+                                                        }}
+                                                        className="w-full font-bold text-indigo-700 dark:text-indigo-400 bg-transparent focus:outline-none appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                    />
+                                                </div>
                                             </div>
                                             <div className="flex flex-col items-end bg-white dark:bg-slate-900 p-2 rounded-lg shadow-sm border border-indigo-100 dark:border-slate-700 min-w-[100px]">
                                                 <span className="text-xs font-semibold text-indigo-400 dark:text-indigo-300 uppercase">Till</span>
-                                                <span className="font-bold text-indigo-700 dark:text-indigo-400">Ep. {episodeRange[1]}</span>
+                                                <div className="flex items-center justify-end gap-1 w-full max-w-[80px]">
+                                                    <span className="font-bold text-indigo-700 dark:text-indigo-400">Ep.</span>
+                                                    <input
+                                                        type="number"
+                                                        value={episodeRange[1] || ""}
+                                                        onChange={(e) => {
+                                                            const val = e.target.value;
+                                                            setEpisodeRange([episodeRange[0], val === '' ? 0 : parseInt(val)]);
+                                                        }}
+                                                        onBlur={() => {
+                                                            let val = episodeRange[1];
+                                                            if (val > MAX_EPISODE) val = MAX_EPISODE;
+                                                            if (val < episodeRange[0]) val = episodeRange[0];
+                                                            setEpisodeRange([episodeRange[0], val]);
+                                                        }}
+                                                        className="w-full font-bold text-indigo-700 dark:text-indigo-400 bg-transparent focus:outline-none text-right appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
 
@@ -167,7 +201,21 @@ export default function Home() {
                                     <div className="flex justify-start items-center px-1">
                                         <div className="flex flex-col items-start bg-white dark:bg-slate-900 p-2 rounded-lg shadow-sm border border-indigo-100 dark:border-slate-700 min-w-[100px]">
                                             <span className="text-xs font-semibold text-indigo-400 dark:text-indigo-300 uppercase">Cut Off</span>
-                                            <span className="font-bold text-indigo-700 dark:text-indigo-400">{cutoff[0]}</span>
+                                            <input
+                                                type="number"
+                                                value={cutoff[0] || ""}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    setCutoff([val === '' ? 0 : parseInt(val)]);
+                                                }}
+                                                onBlur={() => {
+                                                    let val = cutoff[0];
+                                                    if (val < MIN_EPISODE) val = MIN_EPISODE;
+                                                    if (val > MAX_EPISODE) val = MAX_EPISODE;
+                                                    setCutoff([val]);
+                                                }}
+                                                className="w-full font-bold text-indigo-700 dark:text-indigo-400 bg-transparent focus:outline-none appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                            />
                                         </div>
                                     </div>
 
