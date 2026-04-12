@@ -12,20 +12,55 @@ import { useEpisode } from "../../mutations/useEpisode"
 const MIN_EPISODE = 1
 const MAX_EPISODE = 4633
 
+const STORAGE_KEY_ACTIVE_TAB = 'tmkoc_picker_activeTab'
+const STORAGE_KEY_EPISODE_RANGE = 'tmkoc_picker_episodeRange'
+const STORAGE_KEY_CUTOFF = 'tmkoc_picker_cutoff'
+
+const loadFromStorage = <T,>(key: string, defaultValue: T): T => {
+    if (typeof window === "undefined") return defaultValue
+    try {
+        const stored = localStorage.getItem(key)
+        return stored ? JSON.parse(stored) : defaultValue
+    } catch {
+        return defaultValue
+    }
+}
+
 export default function Home() {
-    const [activeTab, setActiveTab] = useState<typeof MODES[keyof typeof MODES]>(MODES.RANDOM)
-    const [episodeRange, setEpisodeRange] = useState([MIN_EPISODE, MAX_EPISODE])
-    const [cutoff, setCutoff] = useState([50])
+    const [activeTab, _setActiveTab] = useState<typeof MODES[keyof typeof MODES]>(() =>
+        loadFromStorage(STORAGE_KEY_ACTIVE_TAB, MODES.RANDOM)
+    )
+    const [episodeRange, _setEpisodeRange] = useState<number[]>(() =>
+        loadFromStorage(STORAGE_KEY_EPISODE_RANGE, [MIN_EPISODE, MAX_EPISODE])
+    )
+    const [cutoff, _setCutoff] = useState<number[]>(() =>
+        loadFromStorage(STORAGE_KEY_CUTOFF, [500])
+    )
+
+    const setActiveTab = useCallback((value: typeof MODES[keyof typeof MODES]) => {
+        _setActiveTab(value)
+        localStorage.setItem(STORAGE_KEY_ACTIVE_TAB, JSON.stringify(value))
+    }, [])
+
+    const setEpisodeRange = useCallback((value: number[]) => {
+        _setEpisodeRange(value)
+        localStorage.setItem(STORAGE_KEY_EPISODE_RANGE, JSON.stringify(value))
+    }, [])
+
+    const setCutoff = useCallback((value: number[]) => {
+        _setCutoff(value)
+        localStorage.setItem(STORAGE_KEY_CUTOFF, JSON.stringify(value))
+    }, [])
 
     const { mutateAsync: fetchEpisode, isPending: isLoading } = useEpisode()
 
     const handleRangeChange = useCallback((value: number[]) => {
         setEpisodeRange(value)
-    }, [])
+    }, [setEpisodeRange])
 
     const handleCutoffChange = useCallback((value: number[]) => {
         setCutoff(value)
-    }, [])
+    }, [setCutoff])
 
     const getModeText = () => {
         switch (activeTab) {
